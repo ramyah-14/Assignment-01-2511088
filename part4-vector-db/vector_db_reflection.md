@@ -1,0 +1,11 @@
+## Vector DB Use Case
+
+A traditional keyword-based database search would not suffice for a law firm searching 500-page contracts in plain English — and the limitation is fundamental, not merely a performance issue.
+
+Keyword search operates on exact or fuzzy string matching. If a lawyer types "termination clauses," the system returns only documents that contain those precise words. But legal contracts are full of synonymous or paraphrased language: "right to terminate," "conditions for dissolution," "exit provisions," or "early termination penalties" all describe the same concept without sharing keywords. A keyword engine would miss them entirely. More critically, a plain-English question like "What happens if either party fails to deliver on time?" contains no legal terminology at all — a keyword search would return nothing useful.
+
+Vector databases solve this by operating on meaning rather than text. Each sentence or paragraph in the contract is converted into a high-dimensional numerical vector (an embedding) using a language model, capturing its semantic content. When a lawyer asks a question, that question is also converted into an embedding, and the system retrieves the passages whose vectors are closest in the embedding space — meaning the passages that are most semantically similar, regardless of exact wording. This is exactly what was demonstrated in the notebook: the query "The bowler took three wickets in one over" correctly matched cricket-related sentences even when no words overlapped exactly.
+
+In the law firm's system, the architecture would work as follows: contracts are chunked into overlapping passages at ingestion time, each chunk is embedded using a model such as `all-MiniLM-L6-v2` or a legal-domain fine-tuned variant, and the embeddings are stored in a vector database such as Pinecone, Weaviate, or pgvector. At query time, the lawyer's plain-English question is embedded and a nearest-neighbor search retrieves the top matching contract passages, which are then surfaced with their source document and page reference.
+
+This approach turns an unusable 500-page document into a searchable knowledge base accessible through natural language — a capability that keyword search cannot replicate.
